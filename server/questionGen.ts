@@ -20,8 +20,10 @@ export async function generateInterviewQuestions(interviewId: string): Promise<Q
 
   const resumeText: string = iv.resume_text || "";
   if (!resumeText.trim()) {
-    // No resume to base questions on — leave questions unset; job can retry.
-    throw new Error("No resume text available for question generation");
+    // No resume to base questions on. This is permanent (not transient), so
+    // return instead of throwing — retrying can't help and just spams logs.
+    console.warn(`[questionGen] no resume text for interview ${interviewId}; skipping`);
+    return { count: 0 };
   }
 
   const apiKey = getAnthropicKey();

@@ -4,7 +4,8 @@ import { enqueueScoring, enqueueQuestionGen } from "../queue.js";
 
 const router = Router();
 
-const PORT = 3001;
+// Must match the port the server actually listens on (see index.ts).
+const PORT = Number(process.env.PORT) || 3001;
 
 // POST /api/jobs/invite-applicants — for each selected application, create an
 // interview (find/create candidate), email the interview link, and enqueue
