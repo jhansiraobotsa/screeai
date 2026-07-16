@@ -23,6 +23,7 @@ interface InterviewRow {
   invite_token: string | null;
   candidates: { full_name: string; email: string } | null;
   question_packs: { title: string } | null;
+  interview_costs: { total_cost: number } | { total_cost: number }[] | null;
 }
 
 export default function Interviews() {
@@ -37,7 +38,7 @@ export default function Interviews() {
     setLoading(true);
     let query = supabase
       .from("interviews")
-      .select("id, status, scheduled_at, started_at, ended_at, created_at, invite_token, candidates(full_name, email), question_packs(title)")
+      .select("id, status, scheduled_at, started_at, ended_at, created_at, invite_token, candidates(full_name, email), question_packs(title), interview_costs(total_cost)")
       .eq("org_id", profile.org_id)
       .order("created_at", { ascending: false });
 
@@ -160,6 +161,17 @@ export default function Interviews() {
                         <span className="text-foreground/70">Created: </span>
                         {format(new Date(interview.created_at), "MMM d, yyyy")}
                       </p>
+                      {(() => {
+                        const c = Array.isArray(interview.interview_costs)
+                          ? interview.interview_costs[0]
+                          : interview.interview_costs;
+                        return c ? (
+                          <p className="text-muted-foreground">
+                            <span className="text-foreground/70">Est. cost: </span>
+                            <span title="Estimated AI/API cost">${Number(c.total_cost).toFixed(2)}</span>
+                          </p>
+                        ) : null;
+                      })()}
                     </div>
 
                     <div className="mt-auto flex gap-1 pt-2">

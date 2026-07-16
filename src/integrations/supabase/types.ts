@@ -290,6 +290,78 @@ export type Database = {
           }
         ]
       }
+      interview_costs: {
+        Row: {
+          breakdown: Json | null
+          claude_cost: number
+          duration_seconds: number
+          interview_id: string
+          org_id: string | null
+          total_cost: number
+          transcription_cost: number
+          updated_at: string
+          voice_cost: number
+        }
+        Insert: {
+          breakdown?: Json | null
+          claude_cost?: number
+          duration_seconds?: number
+          interview_id: string
+          org_id?: string | null
+          total_cost?: number
+          transcription_cost?: number
+          updated_at?: string
+          voice_cost?: number
+        }
+        Update: {
+          breakdown?: Json | null
+          claude_cost?: number
+          duration_seconds?: number
+          interview_id?: string
+          org_id?: string | null
+          total_cost?: number
+          transcription_cost?: number
+          updated_at?: string
+          voice_cost?: number
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          org_id: string | null
+          read: boolean
+          recipient_email: string
+          title: string
+          type: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          org_id?: string | null
+          read?: boolean
+          recipient_email: string
+          title: string
+          type: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          org_id?: string | null
+          read?: boolean
+          recipient_email?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       interviews: {
         Row: {
           candidate_id: string

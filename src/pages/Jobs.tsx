@@ -74,6 +74,14 @@ export default function Jobs() {
       toast.error(error.message);
     } else {
       toast.success(next === "published" ? "Job published" : "Job unpublished");
+      // Notify org users when a job goes live.
+      if (next === "published") {
+        fetch("/api/notify/job-published", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jobId: job.id }),
+        }).catch(() => {});
+      }
       fetchJobs();
     }
   };

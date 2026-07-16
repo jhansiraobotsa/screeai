@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { supabase } from "../supabase.js";
 import { enqueueScoring, enqueueQuestionGen } from "../queue.js";
+import { createNotification } from "../notify.js";
 
 const router = Router();
 
@@ -39,6 +40,18 @@ router.post("/invite-applicants", async (req, res) => {
       if (!emailRes.ok) {
         const e = await emailRes.json().catch(() => ({}));
         throw new Error(e.error || "Email failed");
+      }
+
+      // In-app notification for the invited candidate.
+      if (row.candidate_email) {
+        await createNotification({
+          orgId: null,
+          recipientEmail: row.candidate_email,
+          type: "interview_invited",
+          title: "You've been invited to an interview",
+          body: "Open your Spaces to start your interview.",
+          link: "/spaces",
+        });
       }
 
       results.push({ applicationId: appId, ok: true });

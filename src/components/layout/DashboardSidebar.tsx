@@ -15,6 +15,7 @@ import {
   UserCheck,
   Building2,
   Briefcase,
+  DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -35,6 +36,7 @@ const navItems: NavItem[] = [
   { label: "Candidates", href: "/candidates", icon: Users, roles: ["admin"] },
   { label: "Question Packs", href: "/question-packs", icon: Brain, roles: ["admin"] },
   { label: "Analytics", href: "/analytics", icon: BarChart3, roles: ["admin"] },
+  { label: "Costs", href: "/costs", icon: DollarSign, roles: ["admin"] },
   { label: "User Management", href: "/admin/users", icon: UserCheck, roles: ["admin"] },
   { label: "Settings", href: "/settings", icon: Settings, roles: ["admin"] },
 ];

@@ -13,6 +13,8 @@ import questionsRouter from "./routes/questions.js";
 import mockSessionRouter from "./routes/mock-session.js";
 import uploadsRouter from "./routes/uploads.js";
 import jobsRouter from "./routes/jobs.js";
+import notifyRouter from "./routes/notify.js";
+import costsRouter from "./routes/costs.js";
 import "./queue.js"; // starts the resume-scoring worker
 
 const app = express();
@@ -49,6 +51,8 @@ app.use("/api/questions", questionsRouter);
 app.use("/api/mock-session", mockSessionRouter);
 app.use("/api/uploads", uploadsRouter);
 app.use("/api/jobs", jobsRouter);
+app.use("/api/notify", notifyRouter);
+app.use("/api/costs", costsRouter);
 
 // In production, serve the built frontend (dist/) and SPA-fallback all
 // non-API routes to index.html. In dev, Vite serves the frontend separately.

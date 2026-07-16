@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import SessionCard from "@/components/spaces/SessionCard";
 import OpenPositions from "@/components/jobs/OpenPositions";
+import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 interface MockSession {
   id: string;
@@ -39,6 +40,7 @@ interface InvitedInterview {
 export default function Spaces() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const unread = useUnreadNotifications();
   const [searchParams] = useSearchParams();
   const [sessions, setSessions] = useState<MockSession[]>([]);
   const [invitedInterviews, setInvitedInterviews] = useState<InvitedInterview[]>([]);
@@ -191,8 +193,16 @@ export default function Spaces() {
 
       <Tabs defaultValue="interviews">
         <TabsList>
-          <TabsTrigger value="interviews">Interviews{interviewsCount ? ` (${interviewsCount})` : ""}</TabsTrigger>
-          <TabsTrigger value="positions">Open Positions</TabsTrigger>
+          <TabsTrigger value="interviews" className="relative">
+            Interviews{interviewsCount ? ` (${interviewsCount})` : ""}
+            {(unread.interview_invited || unread.status_changed) ? (
+              <span className="ml-1.5 h-2 w-2 rounded-full bg-primary" />
+            ) : null}
+          </TabsTrigger>
+          <TabsTrigger value="positions" className="relative">
+            Open Positions
+            {unread.job_published ? <span className="ml-1.5 h-2 w-2 rounded-full bg-primary" /> : null}
+          </TabsTrigger>
           <TabsTrigger value="completed">Completed{completedCount ? ` (${completedCount})` : ""}</TabsTrigger>
         </TabsList>
 

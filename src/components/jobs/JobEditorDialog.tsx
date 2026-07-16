@@ -59,16 +59,27 @@ export default function JobEditorDialog({ open, onOpenChange, job, categorySugge
         status,
       };
 
+      let jobId = job?.id;
       if (job) {
         const { error } = await supabase.from("jobs").update(payload).eq("id", job.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("jobs").insert({
+        const { data: created, error } = await supabase.from("jobs").insert({
           ...payload,
           org_id: profile.org_id,
           created_by: user.id,
-        });
+        }).select("id").single();
         if (error) throw error;
+        jobId = created?.id;
+      }
+
+      // Notify org users when the job is published.
+      if (status === "published" && jobId) {
+        fetch("/api/notify/job-published", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jobId }),
+        }).catch(() => {});
       }
 
       toast.success(status === "published" ? "Job published" : "Draft saved");

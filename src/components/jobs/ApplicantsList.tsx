@@ -111,6 +111,12 @@ export default function ApplicantsList({ applicants, showJobColumn, onStatusChan
     if (error) toast.error(error.message);
     else {
       toast.success("Status updated");
+      // Notify the applicant of their new status.
+      fetch("/api/notify/status-changed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId: id, status }),
+      }).catch(() => {});
       onStatusChanged?.();
     }
   };

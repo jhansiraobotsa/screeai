@@ -11,6 +11,7 @@ import Candidates from "./pages/Candidates";
 import Jobs from "./pages/Jobs";
 import JobApplicants from "./pages/JobApplicants";
 import Applicants from "./pages/Applicants";
+import Costs from "./pages/Costs";
 import QuestionPacks from "./pages/QuestionPacks";
 import SettingsPage from "./pages/SettingsPage";
 import Analytics from "./pages/Analytics";
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/jobs/:jobId/applicants" element={<JobApplicants />} />
             <Route path="/applicants" element={<Applicants />} />
+            <Route path="/costs" element={<Costs />} />
             <Route path="/interviews" element={<Interviews />} />
             <Route path="/candidates" element={<Candidates />} />
             <Route path="/settings" element={<SettingsPage />} />

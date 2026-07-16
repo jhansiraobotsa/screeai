@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Brain, LayoutGrid, Plus, Settings, LogOut } from "lucide-react";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 const navLinks = [
   { label: "Spaces", href: "/spaces", icon: LayoutGrid },
@@ -56,7 +57,9 @@ export default function UserNavbar() {
           })}
         </nav>
 
-        {/* User dropdown */}
+        {/* Right side: notifications + user dropdown */}
+        <div className="flex items-center gap-2">
+        <NotificationBell />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -89,6 +92,7 @@ export default function UserNavbar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </header>
   );

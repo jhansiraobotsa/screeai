@@ -394,6 +394,18 @@ export default function InterviewRoom() {
         console.error("Failed to mark interview completed:", error);
         toast.error("Could not save interview completion. Please contact your recruiter.");
       }
+      // Notify org admins the interview finished.
+      fetch("/api/notify/interview-completed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ interviewId: id }),
+      }).catch(() => {});
+      // Record estimated AI/API cost (server derives duration from timestamps).
+      fetch("/api/costs/record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ interviewId: id }),
+      }).catch(() => {});
       clearInterval(timerRef.current);
       setInterview(p => p ? { ...p, status: "completed" } : null);
     }
@@ -678,6 +690,11 @@ ${fullResume ? `CANDIDATE RESUME:\n${fullResume}` : ""}`.trim();
         console.error("Failed to mark interview completed:", error);
         toast.error("Could not save interview completion. Please contact your recruiter.");
       }
+      fetch("/api/costs/record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ interviewId: id }),
+      }).catch(() => {});
       setInterview(p => p ? { ...p, status: "completed" } : null);
       clearInterval(timerRef.current);
       evaluateInterview();
