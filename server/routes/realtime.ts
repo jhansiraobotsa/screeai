@@ -116,7 +116,7 @@ router.get("/token", async (req, res) => {
         body: JSON.stringify({
           session: {
             type: "realtime",
-            model: "gpt-realtime-2",
+            model: "gpt-realtime-mini",
             audio: {
               input: {
                 transcription: { model: "gpt-4o-transcribe" },

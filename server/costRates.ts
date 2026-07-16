@@ -3,9 +3,11 @@
 // All resulting figures are ESTIMATES, not exact billing.
 
 export const RATES = {
-  // OpenAI Realtime voice (gpt-realtime): blended $/minute for audio in+out.
+  // OpenAI Realtime voice: blended $/minute for audio in+out.
   // Realtime audio is billed per token; this is a practical per-minute estimate.
-  openaiRealtimePerMinute: 0.30,
+  // gpt-realtime-mini rates ($10/1M in, $20/1M out) — ~1/3 of the full model.
+  // (Full gpt-realtime-2 would be ~0.30/min; mini ≈ ~0.10/min blended.)
+  openaiRealtimePerMinute: 0.10,
 
   // OpenAI input transcription (gpt-4o-transcribe) $/minute.
   openaiTranscribePerMinute: 0.006,
