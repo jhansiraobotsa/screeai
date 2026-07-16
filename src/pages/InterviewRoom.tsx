@@ -38,6 +38,11 @@ const FLOW_INDEX: Record<Stage, number> = {
   pre_interview: 0, live: 1, wrapping_up: 2, evaluating: 3, completed: 4,
 };
 
+// Hard cap on interview length (seconds). Bounds worst-case AI/API cost — a
+// rambling session can't run indefinitely. At this point the AI is asked to
+// wrap up gracefully (same path as the manual End button), not hard-cut.
+const MAX_INTERVIEW_SECONDS = 20 * 60; // 20 minutes
+
 /** Detect Alex's natural closing message in normal (non-mock) mode */
 function isInterviewClosingMessage(text: string): boolean {
   const lower = text.toLowerCase();
@@ -106,6 +111,8 @@ export default function InterviewRoom() {
   const completingRef  = useRef(false);
   const wrapUpTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const completeAfterWrapUpRef = useRef<(() => Promise<void>) | null>(null);
+  const endInterviewRef = useRef<(() => Promise<void>) | null>(null);
+  const capTriggeredRef = useRef(false);
   const sequenceRef    = useRef(0);
 
   const isMockModeRef      = useRef(false);
@@ -469,10 +476,26 @@ export default function InterviewRoom() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [transcript, aiLiveText, userLiveText]);
 
-  // Timer
+  // Timer — counts up, and enforces a hard cap: at MAX_INTERVIEW_SECONDS it
+  // triggers a graceful wrap-up so cost can't run away on a rambling session.
   useEffect(() => {
     if (stage !== "pre_interview" && stage !== "completed") {
-      timerRef.current = setInterval(() => setTimer(t => t + 1), 1000);
+      timerRef.current = setInterval(() => {
+        setTimer(t => {
+          const next = t + 1;
+          if (
+            next >= MAX_INTERVIEW_SECONDS &&
+            !capTriggeredRef.current &&
+            stageRef.current === "live" &&
+            !wrappingUpRef.current
+          ) {
+            capTriggeredRef.current = true;
+            toast.info("Interview time limit reached — wrapping up.");
+            void endInterviewRef.current?.();
+          }
+          return next;
+        });
+      }, 1000);
     }
     return () => clearInterval(timerRef.current);
   }, [stage]);
@@ -609,6 +632,7 @@ ${fullResume ? `CANDIDATE RESUME:\n${fullResume}` : ""}`.trim();
     try {
       completingRef.current = false;
       wrappingUpRef.current = false;
+      capTriggeredRef.current = false;
       await disconnect(); // Clean up stale connection before starting
 
       await supabase
@@ -700,6 +724,10 @@ ${fullResume ? `CANDIDATE RESUME:\n${fullResume}` : ""}`.trim();
       evaluateInterview();
     }
   }, [id, isConnected, aiSpeaking, sendEvent, clearAudioBuffer, sendTextMessage, stopDeepgram, disconnect, evaluateInterview]);
+
+  useEffect(() => {
+    endInterviewRef.current = endInterview;
+  }, [endInterview]);
 
   // ─── Submit typed text ─────────────────────────────────────────────────────
 
